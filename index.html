@@ -3,402 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Selling - Quiz Bank</title>
+    <title>Professional Selling - MC Quiz</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Use the Inter font family */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        /* Custom styles for quiz feedback */
-        .correct {
-            background-color: #dcfce7; /* green-100 */
-            border-left: 4px solid #22c55e; /* green-500 */
-        }
-        .incorrect {
-            background-color: #fee2e2; /* red-100 */
-            border-left: 4px solid #ef4444; /* red-500 */
-        }
-        .correct-answer-text {
-            color: #b91c1c; /* red-800 */
-            font-weight: 600;
         }
         
-        /* Ensure inputs are easily clickable */
-        label.cursor-pointer {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem; /* 12px */
-            border-radius: 0.5rem; /* 8px */
+        /* Custom styles for answer buttons */
+        .option-button {
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            border: 2px solid transparent;
         }
-        label.cursor-pointer:hover {
-            background-color: #f9fafb; /* gray-50 */
+
+        .option-button.correct {
+            background-color: #22c55e; /* green-500 */
+            border-color: #16a34a; /* green-600 */
+            color: white;
+        }
+
+        .option-button.incorrect {
+            background-color: #ef4444; /* red-500 */
+            border-color: #dc2626; /* red-600 */
+            color: white;
+        }
+
+        /* Styles for the "Start With" toggle */
+        .mode-button.active-mode {
+            background-color: white;
+            color: #3B82F6; /* blue-600 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .dark .mode-button.active-mode {
+            background-color: #374151; /* gray-700 */
+            color: #60A5FA; /* blue-400 */
+        }
+        .mode-button.inactive-mode {
+            background-color: transparent;
+            color: #4B5563; /* gray-600 */
+        }
+        .dark .mode-button.inactive-mode {
+            color: #D1D5DB; /* gray-300 */
+        }
+
+        /* Helper to hide elements */
+        .hidden {
+            display: none;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
 
-    <main class="bg-white p-6 md:p-10 rounded-2xl shadow-xl w-full max-w-3xl mx-auto">
-        
-        <!-- Main Menu (Visible by default) -->
-        <div id="main-menu">
-            <header class="text-center mb-8">
-                <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Professional Selling Quiz Bank</h1>
-                <p class="text-gray-600 mt-2">Please select a quiz to start.</p>
-            </header>
-            <div class="space-y-4">
-                <button id="start-quiz-1" class="w-full text-left p-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all">
-                    <h2 class="text-xl font-bold">Quiz 1: Prospecting & Leads</h2>
-                    <p class="text-blue-100">Covers lead sources, qualifying, and prospecting methods.</p>
-                </button>
-                <button id="start-quiz-2" class="w-full text-left p-6 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg shadow-lg hover:from-teal-700 hover:to-cyan-700 transition-all">
-                    <h2 class="text-xl font-bold">Quiz 2: The Sales Call</h2>
-                    <p class="text-teal-100">Covers call objectives, openings, and building rapport.</p>
-                </button>
-                <button id="start-quiz-3" class="w-full text-left p-6 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-lg shadow-lg hover:from-purple-700 hover:to-violet-700 transition-all">
-                    <h2 class="text-xl font-bold">Quiz 3: SPIN & Objections</h2>
-                    <p class="text-purple-100">Covers the SPIN technique and handling common objections.</p>
+    <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 w-full max-w-2xl">
+        <header class="mb-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-center text-blue-600 dark:text-blue-400">Professional Selling - Learn Mode</h1>
+            <p class="text-center text-gray-600 dark:text-gray-400 text-sm">Exam II Study Guide (Multiple Choice)</p>
+        </header>
+
+        <!-- Progress Bar and Counter -->
+        <div id="quiz-container">
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</span>
+                    <span id="progress-text" class="text-sm font-medium text-gray-700 dark:text-gray-300">Question 1 of 72</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Container -->
+            <div id="question-container" class="w-full min-h-[12rem] bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-4 flex items-center justify-center">
+                <p id="question-text" class="text-lg md:text-xl font-semibold text-center"></p>
+            </div>
+
+            <!-- Options Container -->
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <!-- Option buttons will be injected here -->
+                <button class="option-button w-full bg-white dark:bg-gray-600 dark:hover:bg-gray-500 hover:bg-gray-100 shadow p-4 rounded-lg text-left text-sm font-medium"></button>
+                <button class="option-button w-full bg-white dark:bg-gray-600 dark:hover:bg-gray-500 hover:bg-gray-100 shadow p-4 rounded-lg text-left text-sm font-medium"></button>
+                <button class="option-button w-full bg-white dark:bg-gray-600 dark:hover:bg-gray-500 hover:bg-gray-100 shadow p-4 rounded-lg text-left text-sm font-medium"></button>
+                <button class="option-button w-full bg-white dark:bg-gray-600 dark:hover:bg-gray-500 hover:bg-gray-100 shadow p-4 rounded-lg text-left text-sm font-medium"></button>
+            </div>
+
+            <!-- Feedback and Navigation -->
+            <div class="h-16 flex items-center justify-between">
+                <div id="feedback-text" class="text-xl font-bold"></div>
+                <button id="next-button" class="hidden bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all duration-200">
+                    Next
                 </button>
             </div>
         </div>
 
-        <!-- Quiz 1 Container (Hidden) -->
-        <div id="quiz-1" class="quiz-container hidden">
-            <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-blue-200 pb-2 mb-6">
-                Quiz 1: Prospecting & Leads
-            </h2>
-            
-            <!-- Q1.1 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">1. Which of the following is NOT one of the 4 main questions for qualifying a lead?</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q1_1" value="a" class="form-radio text-blue-600 mr-3"><span>a) Does the lead have the ability to pay?</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_1" value="b" class="form-radio text-blue-600 mr-3"><span>b) Does the lead have the authority to buy?</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_1" value="c" class="form-radio text-blue-600 mr-3"><span>c) Does the lead have a long-term partnership potential?</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_1" value="d" class="form-radio text-blue-600 mr-3"><span>d) Does a want or need exist?</span></label>
-                </div>
-            </div>
-            
-            <!-- Q1.2 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">2. A large group of salespeople attempting to call on all prospective businesses in a given territory on a specific day is called a:</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q1_2" value="a" class="form-radio text-blue-600 mr-3"><span>a) Blitz</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_2" value="b" class="form-radio text-blue-600 mr-3"><span>b) Seminar</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_2" value="c" class="form-radio text-blue-600 mr-3"><span>c) Buying Community</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_2" value="d" class="form-radio text-blue-600 mr-3"><span>d) Cold Call</span></label>
-                </div>
-            </div>
-
-            <!-- Q1.3 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">3. A salesperson who cultivates a relationship with a well-known, influential person to get leads is using which method?</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q1_3" value="a" class="form-radio text-blue-600 mr-3"><span>a) Endless-chain method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_3" value="b" class="form-radio text-blue-600 mr-3"><span>b) Center-of-influence method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_3" value="c" class="form-radio text-blue-600 mr-3"><span>c) Spotter method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_3" value="d" class="form-radio text-blue-600 mr-3"><span>d) Referral event method</span></label>
-                </div>
-            </div>
-
-            <!-- Q1.4 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">4. Trying to get at least one additional lead from each person you interview is known as the:</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q1_4" value="a" class="form-radio text-blue-600 mr-3"><span>a) Endless-chain method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_4" value="b" class="form-radio text-blue-600 mr-3"><span>b) Networking method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_4" value="c" class="form-radio text-blue-600 mr-3"><span>c) Center-of-influence method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_4" value="d" class="form-radio text-blue-600 mr-3"><span>d) Cold canvas method</span></label>
-                </div>
-            </div>
-
-            <!-- Q1.5 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">5. Individuals who provide leads for the salesperson, sometimes for a fee, are called "Bird Dogs" or:</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q1_5" value="a" class="form-radio text-blue-600 mr-3"><span>a) Evangelists</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_5" value="b" class="form-radio text-blue-600 mr-3"><span>b) Promoters</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_5" value="c" class="form-radio text-blue-600 mr-3"><span>c) Spotters</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q1_5" value="d" class="form-radio text-blue-600 mr-3"><span>d) Gatekeepers</span></label>
-                </div>
-            </div>
-
-            <button class="back-to-menu-btn w-full bg-gray-600 text-white p-3 rounded-lg font-semibold hover:bg-gray-700 transition-all">
-                Back to Main Menu
-            </button>
-        </div>
-        
-        <!-- Quiz 2 Container (Hidden) -->
-        <div id="quiz-2" class="quiz-container hidden">
-            <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-teal-200 pb-2 mb-6">
-                Quiz 2: The Sales Call
-            </h2>
-            
-            <!-- Q2.1 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">1. The "Halo Effect" is when:</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q2_1" value="a" class="form-radio text-teal-600 mr-3"><span>a) The prospect is well-known and influential.</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_1" value="b" class="form-radio text-teal-600 mr-3"><span>b) The manner in which you do one thing changes a person's perception of other things you do.</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_1" value="c" class="form-radio text-teal-600 mr-3"><span>c) You use a referral from a satisfied customer to get an appointment.</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_1" value="d" class="form-radio text-teal-600 mr-3"><span>d) You successfully "sell deeper" to an existing customer.</span></label>
-                </div>
-            </div>
-
-            <!-- Q2.2 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">2. Which call objective represents the actual goal a salesperson hopes to achieve?</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q2_2" value="a" class="form-radio text-teal-600 mr-3"><span>a) The Optimistic Objective</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_2" value="b" class="form-radio text-teal-600 mr-3"><span>b) The Minimum Objective</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_2" value="c" class="form-radio text-teal-600 mr-3"><span>c) The Secondary Objective</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_2" value="d" class="form-radio text-teal-600 mr-3"><span>d) The Primary Objective</span></label>
-                </div>
-            </div>
-
-            <!-- Q2.3 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">3. A salesperson who starts by saying, "Ms. Hallgren, thank you for seeing me today. My name is Daniel..." is using which opening?</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q2_3" value="a" class="form-radio text-teal-600 mr-3"><span>a) The Compliment Opening</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_3" value="b" class="form-radio text-teal-600 mr-3"><span>b) The Introduction Opening</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_3" value="c" class="form-radio text-teal-600 mr-3"><span>c) The Benefit Opening</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_3" value="d" class="form-radio text-teal-600 mr-3"><span>d) The Question Opening</span></label>
-                </div>
-            </div>
-
-            <!-- Q2.4 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">4. Which opening is being used here: "Mr. Penney, I would like to tell you about a color copier that can reduce your copying costs by 15 percent."</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q2_4" value="a" class="form-radio text-teal-600 mr-3"><span>a) The Product Opening</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_4" value="b" class="form-radio text-teal-600 mr-3"><span>b) The Referral Opening</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_4" value="c" class="form-radio text-teal-600 mr-3"><span>c) The Benefit Opening</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_4" value="d" class="form-radio text-teal-600 mr-3"><span>d) The Introduction Opening</span></label>
-                </div>
-            </div>
-
-            <!-- Q2.5 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">5. The "Four A's of the Selling Process" are Acknowledge, Acquire, Advise, and:</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q2_5" value="a" class="form-radio text-teal-600 mr-3"><span>a) Assure</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_5" value="b" class="form-radio text-teal-600 mr-3"><span>b) Achieve</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_5" value="c" class="form-radio text-teal-600 mr-3"><span>c) Assess</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q2_5" value="d" class="form-radio text-teal-600 mr-3"><span>d) Authority</span></label>
-                </div>
-            </div>
-
-            <button class="back-to-menu-btn w-full bg-gray-600 text-white p-3 rounded-lg font-semibold hover:bg-gray-700 transition-all">
-                Back to Main Menu
+        <!-- Finish Screen -->
+        <div id="finish-container" class="hidden text-center py-12">
+            <h2 class="text-3xl font-bold mb-4">Quiz Complete!</h2>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-8">You've reviewed all the terms.</p>
+            <button id="restart-button" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all duration-200">
+                Restart (Shuffle)
             </button>
         </div>
 
-        <!-- Quiz 3 Container (Hidden) -->
-        <div id="quiz-3" class="quiz-container hidden">
-            <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-purple-200 pb-2 mb-6">
-                Quiz 3: SPIN & Objections
-            </h2>
-            
-            <!-- Q3.1 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">1. In the SPIN technique, which questions help the prospect recognize the true ramifications of their problem?</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q3_1" value="a" class="form-radio text-purple-600 mr-3"><span>a) Situation Questions</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_1" value="b" class="form-radio text-purple-600 mr-3"><span>b) Problem Questions</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_1" value="c" class="form-radio text-purple-600 mr-3"><span>c) Implication Questions</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_1" value="d" class="form-radio text-purple-600 mr-3"><span>d) Need Payoff Questions</span></label>
-                </div>
-            </div>
-            
-            <!-- Q3.2 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">2. "What's in it for me?" refers to a:</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q3_2" value="a" class="form-radio text-purple-600 mr-3"><span>a) Feature</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_2" value="b" class="form-radio text-purple-600 mr-3"><span>b) Benefit</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_2" value="c" class="form-radio text-purple-600 mr-3"><span>c) Advantage</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_2" value="d" class="form-radio text-purple-600 mr-3"><span>d) Need</span></label>
-                </div>
-            </div>
-            
-            <!-- Q3.3 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">3. If a buyer makes a statement that is factually untrue, the salesperson should use:</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q3_3" value="a" class="form-radio text-purple-600 mr-3"><span>a) The Compensation Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_3" value="b" class="form-radio text-purple-600 mr-3"><span>b) The Acknowledge Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_3" value="c" class="form-radio text-purple-600 mr-3"><span>c) A Direct or Indirect Denial</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_3" value="d" class="form-radio text-purple-600 mr-3"><span>d) The Postpone Method</span></label>
-                </div>
-            </div>
-            
-            <!-- Q3.4 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">4. The "Feel, Felt, Found" method is another name for which objection handling technique?</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q3_4" value="a" class="form-radio text-purple-600 mr-3"><span>a) The Referral Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_4" value="b" class="form-radio text-purple-600 mr-3"><span>b) The Revisit Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_4" value="c" class="form-radio text-purple-600 mr-3"><span>c) The Compensation Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_4" value="d" class="form-radio text-purple-600 mr-3"><span>d) The Acknowledge Method</span></label>
-                </div>
-            </div>
 
-            <!-- Q3.5 -->
-            <div class="question-block rounded-lg p-4 mb-6 transition-all">
-                <p class="font-semibold text-lg mb-3">5. Turning an objection into a reason for buying is also known as the "boomerang" or ________ method.</p>
-                <div class="space-y-2">
-                    <label class="cursor-pointer"><input type="radio" name="q3_5" value="a" class="form-radio text-purple-600 mr-3"><span>a) Postpone Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_5" value="b" class="form-radio text-purple-600 mr-3"><span>b) Revisit Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_5" value="c" class="form-radio text-purple-600 mr-3"><span>c) Compensation Method</span></label>
-                    <label class="cursor-pointer"><input type="radio" name="q3_5" value="d" class="form-radio text-purple-600 mr-3"><span>d) Referral Method</span></label>
-                </div>
-            </div>
-
-            <button class="back-to-menu-btn w-full bg-gray-600 text-white p-3 rounded-lg font-semibold hover:bg-gray-700 transition-all">
-                Back to Main Menu
+        <!-- Options -->
+        <div class="border-t dark:border-gray-700 pt-4 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <button id="shuffle-button" class="w-full sm:w-auto bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg transition-all duration-200">
+                Shuffle Deck
             </button>
+            <div class="flex space-x-2 p-1 bg-gray-200 dark:bg-gray-600 rounded-lg">
+                <button id="start-term-button" class="mode-button active-mode font-medium py-1 px-3 rounded-md">
+                    Start with Definition
+                </button>
+                <button id="start-def-button" class="mode-button inactive-mode font-medium py-1 px-3 rounded-md">
+                    Start with Term
+                </button>
+            </div>
         </div>
-
-    </main>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // --- Data from your study guide ---
+        const studyData = [
+            { term: "Prospecting", definition: "The process of locating potential customers for a product or service. It includes all activities a salesperson does to initiate contact with customers for new business." },
+            { term: "Reasons to Find New Customers", definition: "Salespeople must find new customers to replace those who: switch to competitors, go bankrupt, move out of the territory, merge with noncustomers, or decide to do without a product or service." },
+            { term: "Reasons Salespeople are Reluctant to Prospect", definition: "Fear of rejection, it's time-consuming, concern with looking successful, feeling intimidated or guilty, and worrying about worst-case scenarios." },
+            { term: "Qualifying the Lead", definition: "The process of determining if a lead is a prospect. Key questions: 1. Does a want or need exist? 2. Ability to pay? 3. Authority to buy? 4. Can be approached favorably?" },
+            { term: "Other Lead Qualification Factors", definition: "Includes eligibility to buy (Volume, Geography, House Accounts) and other criteria (Timing of purchase, Potential for long-term partnership, Insight selling)." },
+            { term: "Lead Qualification (Process)", definition: "A prequalification process including data verification, fraud screening, and the grading, scoring, and prioritization of leads." },
+            { term: "Lead Management", definition: "The process for \"nurturing\" a lead throughout the pipeline and evaluating the profitability of sales resulting from lead-generating activities." },
+            { term: "Satisfied Customers (as a lead source)", definition: "Current and previous customers contacted for additional business (selling deeper) and leads. Can act as 'promoters' or 'evangelists'." },
+            { term: "Endless-chain Method", definition: "Attempting to get at least one additional lead from each person interviewed. Works best with satisfied customers." },
+            { term: "Networking", definition: "Establishing connections to other people and then using those networks to generate leads, gather information, and generate sales." },
+            { term: "Center-of-influence Method", definition: "Cultivating a relationship with well-known, influential people in a territory to get the names of leads." },
+            { term: "Buying Community", definition: "A small, informal group of people in similar positions who communicate regularly." },
+            { term: "Social Media (for Prospecting)", definition: "Using platforms like LinkedIn to find customers by building relationships and waiting for 'trigger events' to introduce your product." },
+            { term: "Tradeshows, Fairs, and Merchandise Markets", definition: "Events used for lead generation. In some industries, almost all sales to resellers occur at these." },
+            { term: "Webinars and Seminars (as a lead source)", definition: "Hosting events to generate leads. Should appeal to a specialized market with a topic of strong interest." },
+            { term: "Lists and Directories", definition: "Prospect lists that salespeople can develop or purchase from sources like infoUSA." },
+            { term: "Becoming an Expert (as prospecting)", definition: "A method where salespeople become recognized experts in their field, resulting in prospects seeking information from them." },
+            { term: "Inbound Leads", definition: "Leads generated by the marketing department where the 'lead takes action' to receive more information." },
+            { term: "Outbound Leads", definition: "Leads generated by the marketing department by 'identifying leads through secondary sources'." },
+            { term: "Spotters (or Bird Dogs)", definition: "Individuals who provide leads for the salesperson, sometimes for a fee. They find out when someone is ready to purchase." },
+            { term: "Cold Calling (or Cold Canvas Method)", definition: "A prospecting method that can waste time as many contacts may not have a need or the ability to pay. Often considered rude." },
+            { term: "Blitz", definition: "A large group of salespeople attempts to call on all prospective businesses in a given geographical territory on a specified day." },
+            { term: "Sales Call Flow (Planning)", definition: "The three steps are: 1. Gathering information, 2. Setting objectives, 3. Making an appointment." },
+            { term: "Pre-call Information (Organization)", definition: "Includes: Firmographics, Prospect's customers, Prospect's competitors, Historical buying patterns, Suppliers, Current buying situation, Buying Center, Policies/procedures." },
+            { term: "Internal Sources of Information", definition: "Includes: Company records (CRM), Sales portals, and the Selling center (sales team)." },
+            { term: "Criteria for Effective Objectives (SMART)", definition: "Objectives should be: Specific, Measurable, Achievable, Realistic, and Time-based." },
+            { term: "Primary Call Objective", definition: "The actual goal that a salesperson hopes to achieve in the call." },
+            { term: "Minimum Call Objective", definition: "The minimum that a salesperson hopes to achieve, in case the call does not go exactly as planned." },
+            { term: "Optimistic Call Objective", definition: "The most optimistic outcome the salesperson thinks could occur." },
+            { term: "Secondary Call Objectives", definition: "Other objectives apart from the primary call objective." },
+            { term: "Buyer's WIIFM (\"What's In It For Me?\")", definition: "The buyer's potential goals (e.g., on-time delivery, competitive pricing, technical support, exact specifications)." },
+            { term: "3 Rights of Appointment Setting", definition: "Right Person, Right Time, Right Place." },
+            { term: "\"Right Person\" Considerations", definition: "Focus on: receptivity, dissatisfaction, power, and look for 'Mobilizers'." },
+            { term: "Videoconferencing", definition: "Meetings where people are not physically present but are connected via voice and video." },
+            { term: "Webcasting (Virtual Sales Calls)", definition: "Meetings that are broadcast over the Internet." },
+            { term: "Dealing with Gatekeepers", definition: "Strategies include: convincing it's in the boss's best interest, dropping names of higher-ups, or contacting before/after hours." },
+            { term: "Essential Elements of the Sales Call", definition: "1. Making a good impression 2. Identifying needs 3. Offering the solution 4. Building credibility/trust 5. Assessing reactions and adjusting." },
+            { term: "The Four A's of the Selling Process", definition: "Acknowledge, Acquire, Advise, Assure." },
+            { term: "Impression Management", definition: "Activities a salesperson engages in to affect and manage the buyer's impression of them." },
+            { term: "Waiting for the Prospect (Best Practices)", definition: "Be on time, make good use of your waiting time, and follow the '15-minute rule'." },
+            { term: "Halo Effect", definition: "The manner in which you do one thing can change a person's perceptions of other things you do." },
+            { term: "Opening", definition: "The method of getting the prospect's attention and interest quickly and making a smooth transition." },
+            { term: "Types of Openings", definition: "Includes: Introduction, Referral, Benefit, Product, Compliment, and Question." },
+            { term: "Rapport", definition: "A close, harmonious relationship founded on mutual trust." },
+            { term: "Small Talk", definition: "Used to break the ice before the main presentation. Can be about current news, hobbies, or mutual friends." },
+            { term: "Office Scanning", definition: "A technique where salespeople look around the prospect's office for items to use as effective small talk." },
+            { term: "SPIN: Situation Questions", definition: "General data-gathering questions about the buyer's current situation." },
+            { term: "SPIN: Problem Questions", definition: "Questions about specific difficulties, problems, or dissatisfactions the prospect has." },
+            { term: "SPIN: Implication Questions", definition: "Questions helping the prospect recognize the true ramifications (consequences) of their problem; motivates them to find a solution." },
+            { term: "SPIN: Need Payoff Questions", definition: "Questions about the usefulness of solving a problem; they are solution-centered." },
+            { term: "Feature", definition: "A quality or characteristic of the product or service." },
+            { term: "Benefit", definition: "The way in which a specific feature will help a particular buyer." },
+            { term: "Customer Benefit Proposition", definition: "The way in which a salesperson shows how a product addresses the buyer's specific needs." },
+            { term: "Feature Dumping", definition: "A poor sales practice of listing features without connecting them to benefits." },
+            { term: "FEBA (Features, Evidence, Benefits, Agreement)", definition: "Method: 1. Mention the Feature. 2. Provide Evidence. 3. Explain the Benefit. 4. Ask for Agreement." },
+            { term: "Common Objections (Categories)", definition: "Objections are often related to: 1. Needs 2. The product 3. The source 4. The price 5. Time." },
+            { term: "Successful Approach to Objections", definition: "Anticipate objections, 'forestall' known concerns, relax and listen, evaluate if it's an excuse, and always tell the truth." },
+            { term: "Responding to Factually Untrue Statements", definition: "Use Direct denial or Indirect denial." },
+            { term: "Responding to Valid Concerns/Opinions", definition: "Use Compensation, Referral, Revisit, Acknowledge, or Postpone methods." },
+            { term: "Direct Denial", definition: "A relatively strong statement by the salesperson to indicate an error the prospect has made. (e.g., \"That simply is not true.\")." },
+            { term: "Indirect Denial", definition: "The salesperson denies the objection but attempts to soften the response. (e.g., \"I can see why you would be concerned... Actually, though...\")." },
+            { term: "Compensation Method", definition: "Acknowledging the objection and then showing compensating advantages that outweigh the concern." },
+            { term: "Referral Method (Feel-Felt-Found)", definition: "Relating how other customers had the same objection but found a positive result. (e.g., \"I understand how you feel. Others felt the same way... But they found that...\")." },
+            { term: "Revisit Method (Boomerang Method)", definition: "The salesperson turns the objection into a reason for buying." },
+            { term: "Acknowledge Method (Pass-up)", definition: "Used when a buyer is just venting; the salesperson listens, acknowledges, pauses, and then moves on." },
+            { term: "Postpone Method", definition: "Used when the buyer raises an objection the salesperson would prefer to answer later (like an early price objection)." },
+            { term: "Advantage", definition: "The way in which a specific feature will help a particular buyer (intermediate step between Feature and Benefit)." },
+            { term: "Need Behind the Need", definition: "The more strategic, 'root cause' of the need a buyer expresses. (e.g., Buyer: 'We need laptops' -> Real Need: 'We need to improve sales performance')." },
+            { term: "Insight Selling", definition: "A qualification factor considering the potential for a long-term partnership based on providing valuable insights." },
+            { term: "Hunter/Farmer Approach", definition: "Sales metaphor: 'Hunters' find new business (prospecting). 'Farmers' cultivate existing customers (selling deeper)." }
+        ];
+
+        // --- Application State ---
+        let cards = [...studyData];
+        let currentIndex = 0;
+        let startWith = 'definition'; // 'definition' (q=def, a=term) or 'term' (q=term, a=def)
+
+        // --- DOM Elements ---
+        const quizContainer = document.getElementById('quiz-container');
+        const finishContainer = document.getElementById('finish-container');
+        
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const optionButtons = optionsContainer.querySelectorAll('.option-button');
+        
+        const feedbackText = document.getElementById('feedback-text');
+        const nextButton = document.getElementById('next-button');
+        const restartButton = document.getElementById('restart-button');
+
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const shuffleButton = document.getElementById('shuffle-button');
+        const startTermButton = document.getElementById('start-term-button');
+        const startDefButton = document.getElementById('start-def-button');
+
+        // --- Functions ---
+
+        /**
+         * Shuffles an array in place (Fisher-Yates)
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        
+        /**
+         * Generates 4 options (1 correct, 3 incorrect)
+         */
+        function generateOptions(correctAnswer) {
+            let options = [correctAnswer];
+            let distractors = [];
             
-            // --- Answer Key ---
-            const answers = {
-                // Quiz 1
-                'q1_1': 'c',
-                'q1_2': 'a',
-                'q1_3': 'b',
-                'q1_4': 'a',
-                'q1_5': 'c',
-                // Quiz 2
-                'q2_1': 'b',
-                'q2_2': 'd',
-                'q2_3': 'b',
-                'q2_4': 'c',
-                'q2_5': 'a',
-                // Quiz 3
-                'q3_1': 'c',
-                'q3_2': 'b',
-                'q3_3': 'c',
-                'q3_4': 'a',
-                'q3_5': 'b',
-            };
-
-            // --- Element Selections ---
-            const mainMenu = document.getElementById('main-menu');
-            const quizContainers = document.querySelectorAll('.quiz-container');
-            const startButtons = [
-                document.getElementById('start-quiz-1'),
-                document.getElementById('start-quiz-2'),
-                document.getElementById('start-quiz-3')
-            ];
-            const backButtons = document.querySelectorAll('.back-to-menu-btn');
-            const allRadioInputs = document.querySelectorAll('input[type="radio"]');
-
-            // --- Function to Show a Page ---
-            function showPage(pageId) {
-                // Hide main menu
-                mainMenu.classList.add('hidden');
-                // Hide all quiz containers
-                quizContainers.forEach(container => {
-                    container.classList.add('hidden');
-                });
+            // Get 3 unique distractors
+            while (distractors.length < 3) {
+                const randomIndex = Math.floor(Math.random() * studyData.length);
+                const potentialDistractor = studyData[randomIndex];
                 
-                // Show the target page
-                const targetPage = document.getElementById(pageId);
-                if (targetPage) {
-                    targetPage.classList.remove('hidden');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Ensure distractor is not the correct answer and not already in the list
+                if (potentialDistractor.term !== correctAnswer.term && !distractors.some(d => d.term === potentialDistractor.term)) {
+                    distractors.push(potentialDistractor);
                 }
             }
+            
+            let finalOptions = [...options, ...distractors];
+            shuffleArray(finalOptions);
+            return finalOptions;
+        }
 
-            // --- Function to Check an Answer ---
-            function checkAnswer(inputElement) {
-                const qName = inputElement.name;
-                const userVal = inputElement.value.trim();
+        /**
+         * Loads the current question and options
+         */
+        function loadQuestion() {
+            // Hide "Next" button and clear feedback
+            nextButton.classList.add('hidden');
+            feedbackText.textContent = '';
+            
+            const correctAnswer = cards[currentIndex];
+            const options = generateOptions(correctAnswer);
+
+            // Set question text
+            if (startWith === 'definition') {
+                questionText.innerHTML = correctAnswer.definition; // Question is the definition
+            } else {
+                questionText.innerHTML = correctAnswer.term; // Question is the term
+            }
+            
+            // Populate option buttons
+            optionButtons.forEach((button, index) => {
+                const option = options[index];
                 
-                // Check if this question has an answer
-                if (!(qName in answers)) return;
-
-                const correctVal = answers[qName];
-                const questionBlock = inputElement.closest('.question-block');
-                if (!questionBlock) return;
-
-                // Clear previous feedback
-                questionBlock.classList.remove('correct', 'incorrect');
-                const oldFeedback = questionBlock.querySelector('.correct-answer-text');
-                if (oldFeedback) {
-                    oldFeedback.remove();
-                }
-
-                // Apply new feedback
-                if (userVal === correctVal) {
-                    questionBlock.classList.add('correct');
+                // Set button text
+                if (startWith === 'definition') {
+                    button.innerHTML = option.term; // Answer is the term
                 } else {
-                    questionBlock.classList.add('incorrect');
-                    const correctAnswerNode = document.createElement('p');
-                    correctAnswerNode.className = 'correct-answer-text mt-2 text-sm';
-                    correctAnswerNode.innerHTML = `Correct answer: <strong>${correctVal}</strong>`;
-                    questionBlock.appendChild(correctAnswerNode);
+                    button.innerHTML = option.definition; // Answer is the definition
                 }
-            }
 
-            // --- Function to Reset a Quiz ---
-            function resetQuiz(quizId) {
-                const quizContainer = document.getElementById(quizId);
-                if (!quizContainer) return;
+                // Store the full option data on the button
+                button.dataset.term = option.term; 
+                
+                // Reset styles and enable
+                button.className = 'option-button w-full bg-white dark:bg-gray-600 dark:hover:bg-gray-500 hover:bg-gray-100 shadow p-4 rounded-lg text-left text-sm font-medium';
+                button.disabled = false;
+                
+                // Add click listener
+                button.onclick = () => selectAnswer(button, option, correctAnswer);
+            });
+            
+            updateProgress();
+        }
 
-                // Clear radio buttons
-                quizContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.checked = false;
-                });
+        /**
+         * Handles the user selecting an answer
+         */
+        function selectAnswer(selectedButton, selectedOption, correctAnswer) {
+            // Disable all buttons
+            optionButtons.forEach(button => button.disabled = true);
+            
+            // Show "Next" button
+            nextButton.classList.remove('hidden');
 
-                // Clear feedback
-                quizContainer.querySelectorAll('.question-block').forEach(block => {
-                    block.classList.remove('correct', 'incorrect');
-                    const feedback = block.querySelector('.correct-answer-text');
-                    if (feedback) {
-                        feedback.remove();
+            if (selectedOption.term === correctAnswer.term) {
+                // Correct
+                selectedButton.classList.add('correct');
+                feedbackText.textContent = 'Correct!';
+                feedbackText.className = 'text-xl font-bold text-green-500';
+            } else {
+                // Incorrect
+                selectedButton.classList.add('incorrect');
+                feedbackText.textContent = 'Incorrect';
+                feedbackText.className = 'text-xl font-bold text-red-500';
+                
+                // Highlight the correct answer
+                optionButtons.forEach(button => {
+                    if (button.dataset.term === correctAnswer.term) {
+                        button.classList.add('correct');
                     }
                 });
             }
+        }
 
-            // --- Attach Event Listeners ---
+        /**
+         * Moves to the next question or finishes the quiz
+         */
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < cards.length) {
+                loadQuestion();
+            } else {
+                // Quiz finished
+                quizContainer.classList.add('hidden');
+                finishContainer.classList.remove('hidden');
+            }
+        }
 
-            // Start Buttons
-            startButtons.forEach((button, index) => {
-                button.addEventListener('click', () => {
-                    const quizId = `quiz-${index + 1}`;
-                    showPage(quizId);
-                });
-            });
+        /**
+         * Updates the progress bar and text
+         */
+        function updateProgress() {
+            const currentCardNum = currentIndex + 1;
+            const totalCards = cards.length;
+            const percent = (currentCardNum / totalCards) * 100;
+            
+            progressText.innerText = `Question ${currentCardNum} of ${totalCards}`;
+            progressBar.style.width = `${percent}%`;
+        }
 
-            // Back to Menu Buttons
-            backButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Find the parent quiz and reset it
-                    const parentQuiz = button.closest('.quiz-container');
-                    if (parentQuiz) {
-                        resetQuiz(parentQuiz.id);
-                    }
-                    // Show the main menu
-                    showPage('main-menu');
-                });
-            });
+        /**
+         * Shuffles the question deck and starts over
+         */
+        function startQuiz() {
+            shuffleArray(cards);
+            currentIndex = 0;
+            quizContainer.classList.remove('hidden');
+            finishContainer.classList.add('hidden');
+            loadQuestion();
+        }
 
-            // Radio Inputs for Instant Feedback
-            allRadioInputs.forEach(input => {
-                input.addEventListener('change', () => checkAnswer(input));
-            });
+        /**
+         * Sets the question/answer mode
+         */
+        function setStartWith(mode) {
+            startWith = mode;
+            
+            // Update button styles
+            if (mode === 'definition') {
+                startTermButton.classList.add('active-mode');
+                startTermButton.classList.remove('inactive-mode');
+                startDefButton.classList.add('inactive-mode');
+                startDefButton.classList.remove('active-mode');
+            } else {
+                startDefButton.classList.add('active-mode');
+                startDefButton.classList.remove('inactive-mode');
+                startTermButton.classList.add('inactive-mode');
+                startTermButton.classList.remove('active-mode');
+            }
+            
+            // Reload the current question to reflect the new mode
+            loadQuestion();
+        }
 
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial button styles
+            setStartWith('definition'); // Default: Q=Definition, A=Term
+
+            // Attach event listeners
+            nextButton.addEventListener('click', nextQuestion);
+            shuffleButton.addEventListener('click', startQuiz);
+            restartButton.addEventListener('click', startQuiz);
+            startTermButton.addEventListener('click', () => setStartWith('definition'));
+            startDefButton.addEventListener('click', () => setStartWith('term'));
+            
+            // Start the quiz
+            startQuiz();
         });
+
     </script>
 </body>
 </html>
